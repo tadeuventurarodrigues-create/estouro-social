@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import { prisma } from '@/lib/prisma';
 import { CheckoutForm } from '@/components/checkout-form';
 
@@ -22,7 +23,7 @@ export default async function CheckoutPage({ searchParams }: { searchParams: Pro
           </div>
         </div>
       </section>
-      <CheckoutForm services={services} initialServiceId={serviceId} />
+      <CheckoutForm services={services} selectedServiceId={serviceId} />
     </main>
   );
 }

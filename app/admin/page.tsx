@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import { prisma } from '@/lib/prisma';
 import { requireAdminSession } from '@/lib/auth';
 import { getProviderConfig, getSiteConfig } from '@/lib/site-config';
