@@ -25,7 +25,7 @@ function getNotificationUrl() {
   if (baseUrl.includes('localhost')) return undefined;
   if (!baseUrl.startsWith('https://')) return undefined;
 
-  return `${baseUrl}/api/webhook/mp`;
+  return `${baseUrl}/api/webhooks/mp`;
 }
 
 export async function createPixPayment({

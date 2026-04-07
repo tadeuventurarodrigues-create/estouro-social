@@ -5,7 +5,7 @@ import { CheckoutForm } from '@/components/checkout-form';
 export default async function CheckoutPage({ searchParams }: { searchParams: Promise<{ serviceId?: string }>; }) {
   const params = await searchParams;
   const serviceId = params.serviceId ? Number(params.serviceId) : undefined;
-  const services = await prisma.service.findMany({ where: { enabled: true }, orderBy: { id: 'asc' } });
+  const services = await prisma.service.findMany({ where: { enabled: true }, orderBy: { id: 'asc' } }).catch(() => []);
 
   return (
     <main className="container grid three-col">

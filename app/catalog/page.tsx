@@ -6,7 +6,7 @@ export default async function CatalogPage() {
   const services = await prisma.service.findMany({
     where: { enabled: true },
     orderBy: { id: 'asc' },
-  });
+  }).catch(() => []);
 
   return (
     <main className="container">

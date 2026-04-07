@@ -6,7 +6,9 @@ import { getSiteConfig } from '@/lib/site-config';
 
 export default async function HomePage() {
   const [services, config] = await Promise.all([
-    prisma.service.findMany({ where: { enabled: true }, orderBy: { id: 'asc' }, take: 3 }),
+    prisma.service
+      .findMany({ where: { enabled: true }, orderBy: { id: 'asc' }, take: 3 })
+      .catch(() => []),
     getSiteConfig(),
   ]);
 

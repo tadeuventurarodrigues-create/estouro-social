@@ -4,11 +4,15 @@ import { prisma } from '@/lib/prisma';
 import { getSession, SESSION_COOKIE, verifySessionToken } from '@/lib/session';
 
 export async function getCurrentUser() {
-  const session = await getSession();
-  if (!session) return null;
-  const user = await prisma.user.findUnique({ where: { id: session.userId } });
-  if (!user) return null;
-  return { session, user };
+  try {
+    const session = await getSession();
+    if (!session) return null;
+    const user = await prisma.user.findUnique({ where: { id: session.userId } });
+    if (!user) return null;
+    return { session, user };
+  } catch {
+    return null;
+  }
 }
 
 export async function requireUserSession() {
