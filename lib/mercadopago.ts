@@ -6,7 +6,7 @@ function getMercadoPagoToken() {
   const token = process.env.MERCADOPAGO_ACCESS_TOKEN;
 
   if (!token) {
-    throw new Error('MERCADOPAGO_ACCESS_TOKEN não configurado no .env');
+    throw new Error('MERCADOPAGO_ACCESS_TOKEN não configurado.');
   }
 
   return token;
@@ -14,18 +14,16 @@ function getMercadoPagoToken() {
 
 function createIdempotencyKey(prefix: string, externalReference: string) {
   const random = crypto.randomUUID().replace(/-/g, '').slice(0, 16);
-  const base = `${prefix}-${externalReference}-${random}`;
-  return base.slice(0, 64);
+  return `${prefix}-${externalReference}-${random}`.slice(0, 64);
 }
 
-function getNotificationUrl() {
+function getWebhookUrl() {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
   if (!baseUrl) return undefined;
-  if (baseUrl.includes('localhost')) return undefined;
   if (!baseUrl.startsWith('https://')) return undefined;
 
-  return `${baseUrl}/api/webhooks/mp`;
+  return `${baseUrl}/api/webhook/mp`;
 }
 
 export async function createPixPayment({
@@ -41,7 +39,7 @@ export async function createPixPayment({
 }) {
   const token = getMercadoPagoToken();
   const idempotencyKey = createIdempotencyKey('pix', externalReference);
-  const notificationUrl = getNotificationUrl();
+  const webhookUrl = getWebhookUrl();
 
   const payload: Record<string, unknown> = {
     transaction_amount: Number(amount),
@@ -53,8 +51,8 @@ export async function createPixPayment({
     external_reference: String(externalReference),
   };
 
-  if (notificationUrl) {
-    payload.notification_url = notificationUrl;
+  if (webhookUrl) {
+    payload.notification_url = webhookUrl;
   }
 
   const res = await fetch(`${BASE_URL}/payments`, {
@@ -113,6 +111,7 @@ export async function createCheckoutPreference({
         pending: `${baseUrl}/dashboard?payment=pending`,
       },
       auto_return: 'approved',
+      notification_url: getWebhookUrl(),
     }),
   });
 
