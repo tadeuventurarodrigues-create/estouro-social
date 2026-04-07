@@ -32,10 +32,18 @@ export async function POST(req: NextRequest) {
     });
 
     if (!service || !service.enabled) {
-      return NextResponse.json({ error: 'Serviço não encontrado ou desativado.' }, { status: 404 });
+      return NextResponse.json(
+        { error: 'Serviço não encontrado ou desativado.' },
+        { status: 404 }
+      );
     }
 
     const amount = Number(service.rate);
+
+    const numericUserId =
+      session?.userId && !Number.isNaN(Number(session.userId))
+        ? Number(session.userId)
+        : null;
 
     const order = await prisma.order.create({
       data: {
@@ -48,7 +56,7 @@ export async function POST(req: NextRequest) {
         paymentMethod,
         status: 'pending_payment',
         serviceId: service.id,
-        userId: session?.userId || null,
+        userId: numericUserId,
       },
     });
 
